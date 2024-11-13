@@ -1,0 +1,59 @@
+1. To find the location of user
+Select * from post
+where location IN ('Delhi' , 'Maharashtra' , 'Karnataka' , 'West Bengal');
+
+2. Most followed hashtag
+select 
+hashtag_name AS 'Hashtags', COUNT(hashtag_follow.hashtag_id) AS 'Total Follows' 
+FROM hashtag_follow, hashtags 
+WHERE hashtags.hashtag_id = hashtag_follow.hashtag_id
+GROUP BY hashtag_follow.hashtag_id
+ORDER BY COUNT(hashtag_follow.hashtag_id) DESC LIMIT 5;
+
+3.Most used hastags
+
+SELECT 
+	hashtag_name AS 'Trending Hashtags', 
+    COUNT(post_tags.hashtag_id) AS 'Times Used'
+FROM hashtags,post_tags
+WHERE hashtags.hashtag_id = post_tags.hashtag_id
+GROUP BY post_tags.hashtag_id
+ORDER BY COUNT(post_tags.hashtag_id) DESC LIMIT 10;
+
+4.  Most Inactive User
+SELECT user_id, username AS 'Most Inactive User'
+FROM users
+WHERE user_id NOT IN (SELECT user_id FROM post);
+
+5. Average post per user
+SELECT ROUND((COUNT(post_id) / COUNT(DISTINCT user_id) ),2) AS 'Average Post per User' 
+FROM post;
+
+6. no. of login by per user
+SELECT user_id, email, username, login.login_id AS login_number
+FROM users 
+NATURAL JOIN login;
+
+7. User Never Comment 
+SELECT user_id, username AS 'User Never Comment'
+FROM users
+WHERE user_id NOT IN (SELECT user_id FROM comments);
+
+8. User Not Followed by anyone
+SELECT user_id, username AS 'User Not Followed by anyone'
+FROM users
+WHERE user_id NOT IN (SELECT follower_id FROM follows);
+
+9. Posted more than 5 times
+SELECT user_id, COUNT(user_id) AS post_count FROM post
+GROUP BY user_id
+HAVING post_count > 5
+ORDER BY COUNT(user_id) DESC;
+
+10. Any specific word in comment
+SELECT * FROM comments
+WHERE comment_text REGEXP'good|beautiful';
+
+11. Longest captions in post
+SELECT user_id, caption, LENGTH(post.caption) AS caption_length FROM post
+ORDER BY caption_length DESC LIMIT 5;
